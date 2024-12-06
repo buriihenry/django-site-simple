@@ -4,10 +4,11 @@ from validate_email import validate_email
 from .models import User
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from helpers.decorators import auth_user_should_not_access
     
 
 # Create your views here.
-
+@auth_user_should_not_access
 def register(request):
     if request.method == 'POST':
         context = {'has_error': False, 'data': request.POST}
@@ -63,7 +64,7 @@ def register(request):
 
     return render(request, 'authentication/register.html')
 
- 
+@auth_user_should_not_access 
 def login_user(request):
 
     if request.method == 'POST':
@@ -81,4 +82,13 @@ def login_user(request):
         return redirect(reverse('home'))
 
     return render(request, 'authentication/login.html')
+
+def logout_user(request):
+
+    logout(request)
+
+    messages.add_message(request, messages.SUCCESS,
+                             f'Successfully Logged Out')
+    
+    return redirect(reverse('login'))
 
