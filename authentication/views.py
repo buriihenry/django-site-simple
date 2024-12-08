@@ -40,7 +40,8 @@ def send_activation_email(user, request):
                          to=[user.email]
                          )
 
-    email.send()
+    if not settings.TESTING:
+        EmailThread(email).start()
 
 
 @auth_user_should_not_access
